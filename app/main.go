@@ -5,7 +5,6 @@ import (
 	"net"
 )
 
-// Header section structure
 type DnsHeader struct {
 	// ID represents a unique identifier for a DNS query or response.
 	// It is a 16-bit unsigned integer (2 bytes).
@@ -39,10 +38,15 @@ type DnsHeader struct {
 	// RCODE represents the response code in a DNS message, indicating the status of the response.
 	// It is an 8-bit unsigned integer where different values correspond to different response statuses.
 	// For example, 0 indicates no error, 1 indicates a format error, 2 indicates a server failure, etc.
-	RCODE   uint8
+	RCODE uint8
+	// QDCOUNT represents the number of entries in the question section of the DNS message.
 	QDCOUNT uint16
+	// ANCOUNT represents the number of resource records in the answer section of a DNS message.
+	// It is a 16-bit unsigned integer.
 	ANCOUNT uint16
+	// NSCOUNT represents the number of name server resource records in the DNS message.
 	NSCOUNT uint16
+	// ARCOUNT represents the number of resource records in the additional records section of the DNS message.
 	ARCOUNT uint16
 }
 
