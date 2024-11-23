@@ -53,7 +53,6 @@ func (q *DnsQuestion) QParser(packet []byte, header *DnsHeader) []byte {
 	if len(packet) < 13 {
 		return []byte{}
 	}
-
 	// length of the domain
 	domainLen := packet[12]
 	if domainLen == 0 {
@@ -62,33 +61,35 @@ func (q *DnsQuestion) QParser(packet []byte, header *DnsHeader) []byte {
 
 	// append the domain length to the Name field
 	q.Name = append(q.Name, domainLen)
+
 	for i, v := range packet {
 		if v == domainLen {
 			start := i + 1
-			// create a domain slice
 			domain := packet[start : start+int(domainLen)]
+			// append the domain to the Name field
 			q.Name = append(q.Name, domain...)
-
+			// append the tld length
 			tldLen := packet[start+int(domainLen)]
 			q.Name = append(q.Name, tldLen)
-
 			idx := bytes.Index(packet, []byte{tldLen})
 			tldStart := idx + 1
 			tld := packet[tldStart : tldStart+int(tldLen)]
+
+			// append the tld to the Name field
 			q.Name = append(q.Name, tld...)
 
+			// append the null terminator
 			zeroIndex := len(packet) - 5
 			nullTerminator := packet[zeroIndex]
 			q.Name = append(q.Name, nullTerminator)
 
+			// append the type and class
 			qtypeStart := zeroIndex + 1
 			qtype := packet[qtypeStart : qtypeStart+2]
 			q.Name = append(q.Name, qtype...)
-
 			qclassStart := qtypeStart + 2
 			qclass := packet[qclassStart : qclassStart+2]
 			q.Name = append(q.Name, qclass...)
-
 			break
 		}
 	}
