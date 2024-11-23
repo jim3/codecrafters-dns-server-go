@@ -62,12 +62,9 @@ func (q *DnsQuestion) QParser(packet []byte, header *DnsHeader) []byte {
 
 	// append the domain length to the Name field
 	q.Name = append(q.Name, domainLen)
-
-	// loop through the packet to assemble the sequence label
 	for i, v := range packet {
 		if v == domainLen {
 			start := i + 1
-
 			// create a domain slice
 			domain := packet[start : start+int(domainLen)]
 			q.Name = append(q.Name, domain...)
@@ -91,7 +88,6 @@ func (q *DnsQuestion) QParser(packet []byte, header *DnsHeader) []byte {
 			qclassStart := qtypeStart + 2
 			qclass := packet[qclassStart : qclassStart+2]
 			q.Name = append(q.Name, qclass...)
-			// fmt.Println("Question packet: ", q.Name)
 
 			break
 		}
